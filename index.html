@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map interactive</title>
+    <link rel="stylesheet" href="styles/map-draggable-code.css" />
+    <link rel="stylesheet" href="styles/builder.css" />
+    <script src="scripts/draggable.js" defer></script>
+    <script src="scripts/builder.js" defer></script>
+</head>
+
+<body>
+    <div class="page">
+        <section class="intro">
+            <h1>Map interactive</h1>
+            <p>
+                Drag, drop, copy, paste, enjoy.
+            </p>
+        </section>
+
+        <div class="layout">
+            <section class="panel">
+                <div id="map" class="map-shell">
+                    <div class="map-glow"></div>
+
+                    <svg class="connections" viewBox="0 0 900 520" preserveAspectRatio="none" aria-hidden="true">
+                        <path id="connector" class="connector" d=""></path>
+                    </svg>
+
+                    <div id="label" class="label">
+                        <div class="icon">♒</div>
+                        <div class="label-text">
+                            <div>Usine marémotrice</div>
+                            <div>de la Rance</div>
+                        </div>
+                    </div>
+
+                    <div id="dot" class="dot" title="Drag point"></div>
+                </div>
+            </section>
+
+            <aside class="panel">
+                <div class="code-header">
+                    <h2>Generated HTML</h2>
+                    <div class="actions">
+                        <button id="copy-btn" type="button">Copy</button>
+                        <button id="download-btn" type="button">Download</button>
+                    </div>
+                </div>
+
+                <div class="code-box">
+                    <pre id="code-output"></pre>
+                </div>
+            </aside>
+        </div>
+
+        <section class="panel builder-panel">
+            <div class="builder-header">
+                <h2>Content builder</h2>
+                <div class="actions">
+                    <button id="add-category-btn" type="button">Add category</button>
+                </div>
+            </div>
+
+            <div id="builder-root" class="builder-root"></div>
+        </section>
+    </div>
+</body>
+
+</html>
