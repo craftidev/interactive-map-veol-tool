@@ -1,0 +1,10 @@
+{
+  "name": "interactive-map-veol-tool",
+  "private": true,
+  "scripts": {
+    "start": "serve -s . -l $PORT"
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
+  }
+}
