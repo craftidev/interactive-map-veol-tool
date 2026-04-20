@@ -32,6 +32,14 @@ function buildExportPathFromLiveStage(pathEl) {
     return pathEl?.getAttribute("d") || "";
 }
 
+function toCssUrlVarValue(url) {
+    return url ? `url('${escapeAttr(url)}')` : "none";
+}
+
+function toCssIconFallbackValue(url) {
+    return url ? "transparent" : "currentColor";
+}
+
 function measureCategoryFromLiveStage(state, category, tempMount) {
     const previousActiveCategoryId = state.ui.activeCategoryId;
     state.ui.activeCategoryId = category.id;
@@ -71,21 +79,11 @@ function measureCategoryFromLiveStage(state, category, tempMount) {
 }
 
 function buildExportRowHtml(item, category, isBottomRow, forcedWidth = null) {
-    const iconStyle = category.iconUrl
-        ? `style="background-image: url('${escapeAttr(category.iconUrl)}');"`
-        : "";
-
     const textHtml = renderItemTextToHtml(item.name);
     const linkId = `link-${item.id}`;
-    const rowStyle = [
-        `color: ${escapeAttr(category.color)};`,
-        isBottomRow && forcedWidth ? `width: ${forcedWidth}px;` : "",
-    ]
-        .filter(Boolean)
-        .join(" ");
 
     return `
-        <div class="im-map__row ${isBottomRow ? "im-map__row--anchor" : ""}" style="${rowStyle}">
+        <div class="im-map__row ${isBottomRow ? "im-map__row--anchor" : ""}" style="color: var(--im-map-color); ${isBottomRow && forcedWidth ? `width: ${forcedWidth}px;` : ""}">
             ${
                 item.linkUrl
                     ? `
@@ -97,7 +95,7 @@ function buildExportRowHtml(item, category, isBottomRow, forcedWidth = null) {
             }
 
             <div class="im-map__row-content">
-                <div class="im-map__row-icon" ${iconStyle}></div>
+                <div class="im-map__row-icon"></div>
                 <div class="im-map__row-textblock">
                     <div class="im-map__row-text">${textHtml}</div>
                 </div>
@@ -192,6 +190,7 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
             class="im-map__layer collapse"
             aria-expanded="false"
             data-parent="#${mapId}-layers"
+            style="--im-map-color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
         >
             <svg
                 class="im-map__svg"
@@ -213,14 +212,11 @@ function buildCategoryMenuHtml(categories, mapId) {
             ${categories
                 .map((category) => {
                     const layerId = `${mapId}-layer-${slugify(category.id)}`;
-                    const iconStyle = category.iconUrl
-                        ? `style="background-image: url('${escapeAttr(category.iconUrl)}');"`
-                        : "";
 
                     return `
-                        <div class="im-map__menu-item">
-                            <div class="im-map__menu-link-content" style="color: ${escapeAttr(category.color)};">
-                                <div class="im-map__menu-icon" ${iconStyle}></div>
+                        <div class="im-map__menu-item" style="--im-map-color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};">
+                            <div class="im-map__menu-link-content" style="color: var(--im-map-color);">
+                                <div class="im-map__menu-icon"></div>
                                 <div class="im-map__menu-label">${escapeHtml(category.name)}</div>
                             </div>
 
@@ -256,10 +252,6 @@ function buildAccessibleListHtml(state) {
                 ),
             );
 
-            const iconStyle = category.iconUrl
-                ? `style="background-image: url('${escapeAttr(category.iconUrl)}');"`
-                : "";
-
             return `
                 <div class="im-map__a11y-category">
                     <div class="im-map__a11y-title">${escapeHtml(category.name)}</div>
@@ -268,8 +260,11 @@ function buildAccessibleListHtml(state) {
                             .map(
                                 (item) => `
                                 <li class="im-map__a11y-item">
-                                    <div class="im-map__a11y-item-content" style="color: ${escapeAttr(category.color)};">
-                                        <div class="im-map__a11y-icon" ${iconStyle}></div>
+                                    <div
+                                        class="im-map__a11y-item-content"
+                                        style="color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
+                                    >
+                                        <div class="im-map__a11y-icon"></div>
                                         ${
                                             item.linkUrl
                                                 ? `<a href="${escapeAttr(item.linkUrl)}" target="_blank" rel="noreferrer noopener">${renderItemTextToHtml(item.name)}</a>`
@@ -366,59 +361,65 @@ export function generateCMSCode(state) {
 
     document.body.appendChild(tempMount);
 
-    const measuredByCategory = categories.map((category) => ({
-        category,
-        measuredGroups: measureCategoryFromLiveStage(
-            state,
+    try {
+        const measuredByCategory = categories.map((category) => ({
             category,
-            tempMount,
-        ),
-    }));
+            measuredGroups: measureCategoryFromLiveStage(
+                state,
+                category,
+                tempMount,
+            ),
+        }));
 
-    document.body.removeChild(tempMount);
+        const accessibleListHtml = buildAccessibleListHtml(state);
 
-    const accessibleListHtml = buildAccessibleListHtml(state);
+        const html = `
+    <link rel="stylesheet" href="/documents/d/vivre-edf/interactive-map-base.css" />
 
-    const html = `
-<link rel="stylesheet" href="/documents/d/vivre-edf/interactive-map-base.css" />
+    <div class="${mapId} im-map">
+        <div class="im-map__interactive">
+            <div class="im-map__scene-frame">
+                <div class="im-map__scale-shell">
+                    <div class="im-map__viewport">
+                        <div
+                            class="im-map__map-image"
+                            style="background-image: url('/documents/d/vivre-edf/map_913x900.png');"
+                            aria-hidden="true"
+                        ></div>
 
-<div class="${mapId} im-map">
-    <div class="im-map__interactive">
-        <div class="im-map__scene-frame">
-            <div class="im-map__scale-shell">
-                <div class="im-map__viewport">
-                    <div
-                        class="im-map__map-image"
-                        style="background-image: url('/documents/d/vivre-edf/map_913x900.png');"
-                        aria-hidden="true"
-                    ></div>
-
-                    <div id="${mapId}-layers">
-                        ${measuredByCategory
-                            .map(({ category, measuredGroups }) =>
-                                buildCategoryLayerHtml(
-                                    category,
-                                    getGroupsByCategory(state, category.id),
-                                    measuredGroups,
-                                    mapId,
-                                ),
-                            )
-                            .join("")}
+                        <div id="${mapId}-layers">
+                            ${measuredByCategory
+                                .map(({ category, measuredGroups }) =>
+                                    buildCategoryLayerHtml(
+                                        category,
+                                        getGroupsByCategory(state, category.id),
+                                        measuredGroups,
+                                        mapId,
+                                    ),
+                                )
+                                .join("")}
+                        </div>
                     </div>
                 </div>
             </div>
+
+            ${buildCategoryMenuHtml(categories, mapId)}
         </div>
 
-        ${buildCategoryMenuHtml(categories, mapId)}
+        ${buildAccordionHtml(mapId, accessibleListHtml)}
+
+        ${buildFallbackListHtml(accessibleListHtml)}
     </div>
 
-    ${buildAccordionHtml(mapId, accessibleListHtml)}
+    ${buildPerMapStyleBlock(mapId, state)}
+        `.trim();
 
-    ${buildFallbackListHtml(accessibleListHtml)}
-</div>
+        return html;
 
-${buildPerMapStyleBlock(mapId, state)}
-    `.trim();
+    } finally {
+        if(tempMount.parentNode) {
+            tempMount.parentNode.removeChild(tempMount);
+        }
+    }
 
-    return html;
 }

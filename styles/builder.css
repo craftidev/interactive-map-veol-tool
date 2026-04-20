@@ -232,3 +232,25 @@
 .item-row__link:hover {
     text-decoration: underline;
 }
+
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.color-swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background: var(--swatch-color);
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-swatch:hover {
+    transform: scale(1.25);
+    background: var(--swatch-color);
+}

@@ -176,7 +176,8 @@
 .im-map__row-icon,
 .im-map__menu-icon,
 .im-map__a11y-icon {
-    background-color: currentColor;
+    background-image: var(--im-map-icon, none);
+    background-color: var(--im-map-icon-fallback, currentColor);
     border-radius: 0;
 }
 

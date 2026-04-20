@@ -85,7 +85,7 @@ function buildConnectorPathWithUnderline(
 
 function buildStageGroupItem(category, item, isBottomItem) {
     const iconStyle = category.iconUrl
-        ? `style="background-image: url('${escapeHtml(category.iconUrl)}');"`
+        ? `style="background-image: url('${escapeHtml(category.iconUrl)}'); --stage-icon-fallback: transparent;"`
         : "";
 
     return `

@@ -148,7 +148,7 @@
 .stage-group__icon {
     width: var(--prod-square-icon-w-h);
     height: var(--prod-square-icon-w-h);
-    background-color: currentColor;
+    background-color: var(--stage-icon-fallback, currentColor);
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;

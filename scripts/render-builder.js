@@ -5,6 +5,7 @@ import {
     getGroupsByCategory,
     getItemsByCategory,
     getItemsForGroup,
+    PRESET_CATEGORY_COLORS,
 } from "./state.js";
 
 function escapeHtml(value) {
@@ -17,6 +18,26 @@ function escapeHtml(value) {
 
 function renderMultilineText(value) {
     return escapeHtml(value || "");
+}
+
+function renderColorPalette(selectedColor = "") {
+    return `
+      <div class="color-palette">
+        ${PRESET_CATEGORY_COLORS.map(
+            (entry) => `
+              <button
+                type="button"
+                class="color-swatch ${selectedColor.toLowerCase() === entry.value.toLowerCase() ? "is-active" : ""}"
+                data-action="apply-color-swatch"
+                data-color="${entry.value}"
+                title="${escapeHtml(entry.name)} (${escapeHtml(entry.value)})"
+                aria-label="${escapeHtml(entry.name)} (${escapeHtml(entry.value)})"
+                style="--swatch-color: ${escapeHtml(entry.value)};"
+              ></button>
+            `,
+        ).join("")}
+      </div>
+    `;
 }
 
 function renderCategoryForm(draft, mode, categoryId = "") {
@@ -40,6 +61,7 @@ function renderCategoryForm(draft, mode, categoryId = "") {
         <div class="field">
           <label>Color</label>
           <input type="text" name="color" value="${escapeHtml(draft?.color || "#1f5eff")}" placeholder="#1f5eff" />
+          ${renderColorPalette(draft?.color || "#1f5eff")}
         </div>
 
         <div class="field field--full">
