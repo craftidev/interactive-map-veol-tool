@@ -1,0 +1,31 @@
+:root {
+    --page-bg: #f4f5f7;
+    --panel-bg: #ffffff;
+    --default-bg-color: #fff;
+    --panel-border: #e2e5ea;
+    --action-border-color: #d0d5dd;
+    --btn-bg-color-hover: #fafafa;
+    --shell-bg-color: var(--page-bg);
+    --canvas-bg-color: #f8fafc;
+    --text: #171a21;
+    --muted: #667085;
+    --soft: #f7f8fa;
+    --soft-2: #eef1f5;
+    --primary: #1f5eff;
+    --danger: #c93636;
+    --shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+    --stage-width: 917px;
+    --stage-height: 705px;
+    --stage-map-width: 508px;
+    --stage-map-height: 501px;
+    --stage-pad-left: 204px;
+    --stage-pad-right: 205px;
+    --stage-pad-top: 102px;
+    --stage-pad-bottom: 102px;
+    --stage-map-image: url("../assets/map_913x900.png");
+    --stage-line-thickness: 1px;
+    --stage-line-dash-length: 8px;
+    --stage-line-dash-gap: 6px;
+    --prod-font-size: 12px;
+    --prod-square-icon-w-h: 31px;
+}

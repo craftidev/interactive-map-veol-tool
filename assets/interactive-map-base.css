@@ -1,0 +1,369 @@
+:root {
+    --prod-font-size: 12px;
+    --prod-square-icon-w-h: 31px;
+    --seperator-a11y-list-color: darkgrey;
+    --text-a11y-list-color: black;
+    --hover-text-a11y-list-color: #001A70;
+    --hover-category-link-bg-color: #E9F1F9;
+}
+
+/* ==========================================================================
+   map container and rigid scene scaling
+   ========================================================================== */
+.im-map {
+    position: relative;
+    width: 100%;
+    max-width: 917px;
+}
+
+.im-map p {
+    margin: 0 !important;
+}
+
+.im-map__interactive {
+    display: block;
+    width: 100%;
+}
+
+.im-map__scene-frame {
+    position: relative;
+    width: 917px;
+    height: 705px;
+    overflow: hidden;
+}
+
+.im-map__scale-shell {
+    display: block;
+    width: 917px;
+    height: 705px;
+    transform-origin: top left;
+}
+
+.im-map__viewport {
+    position: relative;
+    width: 917px;
+    height: 705px;
+    overflow: hidden;
+}
+
+.im-map__layer {
+    position: absolute;
+    inset: 0;
+}
+
+.im-map__map-image {
+    position: absolute;
+    left: 204px;
+    top: 102px;
+    width: 508px;
+    height: 501px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+/* ==========================================================================
+   svg connectors
+   ========================================================================== */
+.im-map__svg {
+    position: absolute;
+    inset: 0;
+    width: 917px;
+    height: 705px;
+    overflow: visible;
+    z-index: 1;
+}
+
+.im-map__path {
+    fill: none;
+    stroke-width: 1px;
+    stroke-dasharray: 8 6;
+    stroke-linecap: butt;
+    opacity: 0.95;
+}
+
+.im-map__connector-link {
+    cursor: pointer;
+}
+
+.im-map__dot-svg,
+.im-map__connector-link .im-map__path,
+.im-map__connector-link .im-map__dot-svg {
+    pointer-events: visiblePainted;
+}
+
+/* ==========================================================================
+   positioned groups and rows
+   ========================================================================== */
+.im-map__group {
+    position: absolute;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    z-index: 2;
+}
+
+.im-map__row {
+    position: relative;
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 12px;
+    width: fit-content;
+    max-width: 240px;
+    padding-bottom: 6px;
+    box-sizing: border-box;
+}
+
+.im-map__row--anchor {
+    max-width: none;
+}
+
+.im-map__row-content {
+    position: relative;
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.im-map__row-text {
+    font-weight: 700;
+    line-height: 1.25;
+    font-size: var(--prod-font-size);
+    word-break: break-word;
+    white-space: pre-line;
+}
+
+.im-map__row-textblock {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+/* ==========================================================================
+   icons
+   ========================================================================== */
+.im-map__row-icon {
+    width: var(--prod-square-icon-w-h);
+    height: var(--prod-square-icon-w-h);
+    flex: 0 0 auto;
+    align-self: flex-end;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.im-map__menu-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.im-map__a11y-icon {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.im-map__row-icon,
+.im-map__menu-icon,
+.im-map__a11y-icon {
+    background-color: currentColor;
+    border-radius: 0;
+}
+
+/* ==========================================================================
+   invisible links and hit areas
+   ========================================================================== */
+a[id^="link-"],
+.im-map__menu-link {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 10 !important;
+    display: block !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    text-indent: -9999px !important;
+    overflow: hidden !important;
+}
+
+.im-map__menu-item:hover {
+    background-color: var(--hover-category-link-bg-color);
+}
+
+.im-map__row-hitbox,
+.im-map__menu-hitbox {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+}
+
+.im-map__row-hitbox p,
+.im-map__menu-hitbox p {
+    position: absolute !important;
+    inset: 0 !important;
+    margin: 0 !important;
+}
+
+/* ==========================================================================
+   hover interactions
+   ========================================================================== */
+.im-map__row-hitbox:hover+.im-map__row-content .im-map__row-text {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   menu
+   ========================================================================== */
+.im-map__menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.im-map__menu-item {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.im-map__menu-link-content {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.im-map__menu-label {
+    display: inline-block;
+}
+
+/* ==========================================================================
+   accessibility / fallback content
+   ========================================================================== */
+.im-map__accordion {
+    margin-top: 20px;
+}
+
+.im-map__a11y-category+.im-map__a11y-category {
+    margin-top: 16px;
+}
+
+.im-map__a11y-title {
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.im-map__a11y-list {
+    margin: 0 15px;
+    padding-left: 20px;
+    list-style-type: none !important;
+    list-style: none !important;
+    width: 100%;
+}
+
+.gl-accordeon-content {
+    margin-top: 15px;
+}
+
+.im-map__a11y-item+.im-map__a11y-item {
+    padding-top: 4px;
+    border-top: 1px solid var(--seperator-a11y-list-color);
+}
+
+.im-map__a11y-item:has(a) {
+    position: relative;
+    padding-right: 25px;
+}
+
+.im-map__a11y-item:has(a)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    background-image: url('/documents/77591/1229279018/resp-map-arrow.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.im-map__a11y-item-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.im-map__a11y-item-content,
+.im-map__a11y-item-content a {
+    color: var(--text-a11y-list-color) !important;
+}
+
+.im-map__a11y-item-content a:hover {
+    color: var(--hover-text-a11y-list-color) !important;
+}
+
+.im-map__fallback-list {
+    display: none;
+    margin-top: 20px;
+}
+
+/* ==========================================================================
+   container-based rigid scene scaling
+   ========================================================================== */
+.im-map {
+    container-type: inline-size;
+}
+
+@container (max-width: 916px) {
+    .im-map__scene-frame {
+        height: calc(705px * 0.9);
+    }
+
+    .im-map__scale-shell {
+        transform: scale(0.9);
+    }
+}
+
+@container (max-width: 820px) {
+    .im-map__scene-frame {
+        height: calc(705px * 0.8);
+    }
+
+    .im-map__scale-shell {
+        transform: scale(0.8);
+    }
+}
+
+@container (max-width: 730px) {
+    .im-map__scene-frame {
+        height: calc(705px * 0.7);
+    }
+
+    .im-map__scale-shell {
+        transform: scale(0.7);
+    }
+}
+
+@container (max-width: 666px) {
+
+    .im-map__interactive,
+    .im-map__accordion {
+        display: none;
+    }
+
+    .im-map__fallback-list {
+        display: block;
+    }
+}

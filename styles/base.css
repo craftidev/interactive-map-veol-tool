@@ -1,0 +1,52 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--page-bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    border: 1px solid var(--action-border-color);
+    background: var(--default-bg-color);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--btn-bg-color-hover);
+}
+
+button.danger {
+    color: var(--danger);
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border: 1px solid var(--action-border-color);
+    background: var(--default-bg-color);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 72px;
+    line-height: 1.4;
+}
