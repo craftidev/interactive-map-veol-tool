@@ -83,7 +83,7 @@ function buildConnectorPathWithUnderline(
     return `M ${underlineStart.x} ${underlineStart.y} L ${underlineEnd.x} ${underlineEnd.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}`;
 }
 
-function buildStageGroupItem(category, item, isBottomItem) {
+function buildStageGroupItem(category, item, isBottomItem, forcedWidth = null) {
     const iconStyle = category.iconUrl
         ? `style="background-image: url('${escapeHtml(category.iconUrl)}'); --stage-icon-fallback: transparent;"`
         : "";
@@ -113,7 +113,12 @@ function buildStageGroup(category, group, items, isSelected) {
     >
       ${items
           .map((item, index) =>
-              buildStageGroupItem(category, item, index === items.length - 1),
+              buildStageGroupItem(
+                  category,
+                  item,
+                  index === items.length - 1,
+                  index === items.length - 1 ? group.labelWidth : null,
+              ),
           )
           .join("")}
     </div>
@@ -267,4 +272,27 @@ export function syncStageConnections(state, stageRootEl) {
     });
 
     svgEl.innerHTML = paths.join("");
+}
+
+export function syncStageLabelWidths(state, stageRootEl) {
+    const groups = state.groups || [];
+
+    groups.forEach((group) => {
+        const groupEl = stageRootEl.querySelector(
+            `.stage-group[data-group-id="${group.id}"]`,
+        );
+        const anchorEl = groupEl?.querySelector('[data-role="connector-anchor"]');
+
+        if (!anchorEl) return;
+
+        const measuredWidth = Math.round(anchorEl.offsetWidth);
+
+        if (!Number.isFinite(measuredWidth) || measuredWidth <= 0) {
+            return;
+        }
+
+        if (group.labelWidth !== measuredWidth) {
+            group.labelWidth = measuredWidth;
+        }
+    });
 }

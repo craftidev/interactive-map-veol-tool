@@ -4,7 +4,50 @@
     --seperator-a11y-list-color: darkgrey;
     --text-a11y-list-color: black;
     --hover-text-a11y-list-color: #001A70;
-    --hover-category-link-bg-color: #E9F1F9;
+    --hover-category-and-list-link-bg-color: #E9F1F9;
+}
+
+@font-face {
+    font-family: 'EDF2020W01-Regular';
+    src: url('/documents/d/vivre-edf/edf2020w01-regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* ==========================================================================
+   CSS reset
+   ========================================================================== */
+
+.im-map {
+    line-height: 1.5;
+    font-family: 'EDF2020W01-Regular', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    interpolate-size: allow-keywords;
+
+    & *, & *::before, & *::after {
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    img, picture, video, canvas, svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    input, button, textarea, select {
+      font: inherit;
+    }
+
+    p, h1, h2, h3, h4, h5, h6 {
+      overflow-wrap: break-word;
+      text-wrap: balance;
+    }
+
+    p {
+      text-wrap: pretty;
+    }
+
+    isolation: isolate;
 }
 
 /* ==========================================================================
@@ -156,8 +199,8 @@
 }
 
 .im-map__menu-icon {
-    width: 20px;
-    height: 20px;
+    width: 31px;
+    height: 31px;
     display: inline-block;
     background-repeat: no-repeat;
     background-position: center;
@@ -165,8 +208,8 @@
 }
 
 .im-map__a11y-icon {
-    width: 16px;
-    height: 16px;
+    width: 31px;
+    height: 31px;
     flex: 0 0 auto;
     background-repeat: no-repeat;
     background-position: center;
@@ -185,7 +228,8 @@
    invisible links and hit areas
    ========================================================================== */
 a[id^="link-"],
-.im-map__menu-link {
+.im-map__menu-link,
+.im-map__a11y-link {
     position: absolute !important;
     inset: 0 !important;
     z-index: 10 !important;
@@ -198,7 +242,7 @@ a[id^="link-"],
 }
 
 .im-map__menu-item:hover {
-    background-color: var(--hover-category-link-bg-color);
+    background-color: var(--hover-category-and-list-link-bg-color);
 }
 
 .im-map__row-hitbox,
@@ -243,6 +287,7 @@ a[id^="link-"],
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    padding: 5px;
 }
 
 .im-map__menu-label {
@@ -277,17 +322,21 @@ a[id^="link-"],
     margin-top: 15px;
 }
 
+.im-map__a11y-item {
+    padding-bottom: 3px;
+}
+
 .im-map__a11y-item+.im-map__a11y-item {
-    padding-top: 4px;
+    padding-top: 3px;
     border-top: 1px solid var(--seperator-a11y-list-color);
 }
 
-.im-map__a11y-item:has(a) {
+.im-map__a11y-item.is-linked {
     position: relative;
     padding-right: 25px;
 }
 
-.im-map__a11y-item:has(a)::after {
+.im-map__a11y-item.is-linked::after {
     content: "";
     position: absolute;
     right: 0;
@@ -307,12 +356,16 @@ a[id^="link-"],
 }
 
 .im-map__a11y-item-content,
-.im-map__a11y-item-content a {
+.im-map__a11y-text {
     color: var(--text-a11y-list-color) !important;
 }
 
-.im-map__a11y-item-content a:hover {
+.im-map__a11y-item.is-linked:hover .im-map__a11y-text {
     color: var(--hover-text-a11y-list-color) !important;
+}
+
+.im-map__a11y-text {
+    white-space: pre-line;
 }
 
 .im-map__fallback-list {

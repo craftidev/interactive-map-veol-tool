@@ -213,6 +213,7 @@ export function saveNewItem(state, categoryId, values) {
         labelY: placement.labelY,
         dotX: placement.dotX,
         dotY: placement.dotY,
+        labelWidth: null,
     };
 
     state.items.push(newItem);
@@ -246,6 +247,11 @@ export function saveEditedItem(state, itemId, values) {
     item.name = values.name.trim() || "Untitled item";
     item.linkUrl = values.linkUrl.trim();
 
+    const group = getGroupById(state, item.groupId);
+    if (group) {
+        group.labelWidth = null;
+    }
+
     state.ui.editingItemId = null;
     state.ui.draftItem = null;
 }
@@ -277,6 +283,7 @@ export function deleteItem(state, itemId) {
                     groupItem.groupId = group.id;
                 }
             });
+            group.labelWidth = null;
             syncGroupCategoryFromItems(state, group);
         }
     }
@@ -407,6 +414,7 @@ export function groupSelectedItems(state, categoryId) {
 
     anchorGroup.itemIds = mergedItemIds;
     anchorGroup.categoryId = categoryId;
+    anchorGroup.labelWidth = null;
 
     mergedItemIds.forEach((itemId) => {
         const item = getItemById(state, itemId);
@@ -445,6 +453,7 @@ export function ungroupItemGroup(state, itemId) {
 
     const firstItemId = originalItemIds[0];
     group.itemIds = [firstItemId];
+    group.labelWidth = null;
 
     const firstItem = getItemById(state, firstItemId);
     if (firstItem) {
@@ -467,6 +476,7 @@ export function ungroupItemGroup(state, itemId) {
             labelY: originalLabelY + 18 * (index + 1),
             dotX: originalDotX,
             dotY: originalDotY,
+            labelWidth: null,
         });
     });
 

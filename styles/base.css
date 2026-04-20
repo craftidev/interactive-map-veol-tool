@@ -1,5 +1,13 @@
+@font-face {
+    font-family: 'EDF2020W01-Regular';
+    src: url('../assets/EDF2020W01-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
     box-sizing: border-box;
+    font-family: 'EDF2020W01-Regular', sans-serif;
 }
 
 html,

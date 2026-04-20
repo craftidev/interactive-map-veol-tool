@@ -1,7 +1,6 @@
 // bootstraps everything
 // owns renderApp()
 
-import { createInitialState, normalizeLoadedState } from "./state.js";
 import {
     cancelAddCategory,
     cancelAddItem,
@@ -27,8 +26,13 @@ import {
     toggleItemSelection,
     ungroupItemGroup,
 } from "./actions.js";
+import {
+    renderStage,
+    syncStageConnections,
+    syncStageLabelWidths,
+} from "./render-stage.js";
+import { createInitialState, normalizeLoadedState } from "./state.js";
 import { renderBuilder } from "./render-builder.js";
-import { renderStage, syncStageConnections } from "./render-stage.js";
 import { generateCMSCode } from "./export.js";
 
 function handleError(error, context = "Unknown error") {
@@ -126,10 +130,11 @@ async function handleLoadJsonFile(file) {
 
 
 function renderApp() {
-    try{
+    try {
         renderStage(state, stageTabsRootEl, stageRootEl);
         renderBuilder(state, builderRootEl);
         syncStageConnections(state, stageRootEl);
+        syncStageLabelWidths(state, stageRootEl);
         bindEvents();
     } catch(error) {
         handleError(error, "The app failed while rendering.")

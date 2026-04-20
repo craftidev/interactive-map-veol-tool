@@ -139,6 +139,11 @@
     gap: 12px;
     padding-bottom: 6px;
     color: var(--primary);
+    box-sizing: border-box;
+}
+
+.stage-group-row.is-bottom {
+    max-width: none;
 }
 
 .stage-group-row.is-background {

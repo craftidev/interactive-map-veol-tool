@@ -3,7 +3,7 @@
 // selectors
 // maybe clone/import/export helpers
 
-export const APP_STATE_VERSION = 1;
+export const APP_STATE_VERSION = 2;
 
 const DEFAULT_MAP = {
     imageUrl: "",
@@ -85,6 +85,7 @@ export function createInitialState() {
                 labelY: firstGroupPosition.labelY,
                 dotX: firstGroupPosition.dotX,
                 dotY: firstGroupPosition.dotY,
+                labelWidth: null,
             },
         ],
 
@@ -257,6 +258,7 @@ export function normalizeLoadedState(rawState) {
                   labelY: Number.isFinite(group?.labelY) ? group.labelY : 0,
                   dotX: Number.isFinite(group?.dotX) ? group.dotX : 0,
                   dotY: Number.isFinite(group?.dotY) ? group.dotY : 0,
+                  labelWidth: Number.isFinite(group?.labelWidth) ? group.labelWidth : null,
               }))
             : structuredClone(fallback.groups),
 

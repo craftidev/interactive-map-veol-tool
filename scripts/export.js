@@ -58,18 +58,9 @@ function measureCategoryFromLiveStage(state, category, tempMount) {
     const groups = getGroupsByCategory(state, category.id);
 
     const measured = groups.map((group, index) => {
-        const groupEl = stageRoot.querySelector(
-            `.stage-group[data-group-id="${group.id}"]`,
-        );
-        const anchorEl = groupEl?.querySelector(
-            '[data-role="connector-anchor"]',
-        );
-        const anchorRect = anchorEl?.getBoundingClientRect();
-
         return {
             groupId: group.id,
             pathD: buildExportPathFromLiveStage(pathEls[index]),
-            anchorWidth: anchorRect ? Math.ceil(anchorRect.width) : null,
             items: getItemsForGroup(state, group).sort((a, b) => a.order - b.order),
         };
     });
@@ -167,7 +158,7 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
                         item,
                         category,
                         index === measured.items.length - 1,
-                        index === measured.items.length - 1 ? measured.anchorWidth : null,
+                        index === measured.items.length - 1 ? group.labelWidth : null,
                     ),
                 )
                 .join("");
@@ -257,23 +248,35 @@ function buildAccessibleListHtml(state) {
                     <div class="im-map__a11y-title">${escapeHtml(category.name)}</div>
                     <ul class="im-map__a11y-list">
                         ${items
-                            .map(
-                                (item) => `
-                                <li class="im-map__a11y-item">
-                                    <div
-                                        class="im-map__a11y-item-content"
-                                        style="color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
-                                    >
-                                        <div class="im-map__a11y-icon"></div>
+                            .map((item) => {
+                                const linkId = `link-a11y-${item.id}`;
+
+                                return `
+                                    <li class="im-map__a11y-item ${item.linkUrl ? "is-linked" : ""}">
+                                        <div
+                                            class="im-map__a11y-item-content"
+                                            style="color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
+                                        >
+                                            <div class="im-map__a11y-icon"></div>
+                                            <div class="im-map__a11y-text">${renderItemTextToHtml(item.name)}</div>
+                                        </div>
+
                                         ${
                                             item.linkUrl
-                                                ? `<a href="${escapeAttr(item.linkUrl)}" target="_blank" rel="noreferrer noopener">${renderItemTextToHtml(item.name)}</a>`
-                                                : `<div>${renderItemTextToHtml(item.name)}</div>`
+                                                ? `
+                                                    <a
+                                                        id="${linkId}"
+                                                        class="im-map__a11y-link"
+                                                        href="${escapeAttr(item.linkUrl)}"
+                                                        target="_blank"
+                                                        rel="noreferrer noopener"
+                                                    >.</a>
+                                                `
+                                                : ""
                                         }
-                                    </div>
-                                </li>
-                            `,
-                            )
+                                    </li>
+                                `;
+                            })
                             .join("")}
                     </ul>
                 </div>
