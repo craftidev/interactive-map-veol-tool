@@ -14,7 +14,45 @@ function escapeHtml(value) {
 }
 
 function renderStageItemText(value) {
-    return escapeHtml(value || "");
+    const lines = String(value || "").split(/\r?\n/);
+    const parts = [];
+    let listBuffer = [];
+
+    function flushList() {
+        if (listBuffer.length === 0) return;
+
+        parts.push(`
+            <ul class="stage-group__text-list">
+                ${listBuffer
+                    .map((item) => `<li>${escapeHtml(item)}</li>`)
+                    .join("")}
+            </ul>
+        `);
+
+        listBuffer = [];
+    }
+
+    lines.forEach((line) => {
+        if (line.startsWith("- ")) {
+            listBuffer.push(line.slice(2));
+            return;
+        }
+
+        flushList();
+
+        if (line === "") {
+            parts.push("<br>");
+            return;
+        }
+
+        parts.push(
+            `<span class="stage-group__text-line">${escapeHtml(line)}</span>`,
+        );
+    });
+
+    flushList();
+
+    return parts.join("");
 }
 
 function buildStageTabs(state) {
@@ -281,7 +319,9 @@ export function syncStageLabelWidths(state, stageRootEl) {
         const groupEl = stageRootEl.querySelector(
             `.stage-group[data-group-id="${group.id}"]`,
         );
-        const anchorEl = groupEl?.querySelector('[data-role="connector-anchor"]');
+        const anchorEl = groupEl?.querySelector(
+            '[data-role="connector-anchor"]',
+        );
 
         if (!anchorEl) return;
 

@@ -58,3 +58,9 @@ textarea {
     min-height: 72px;
     line-height: 1.4;
 }
+
+.tuto-highlight {
+    padding: 5px;
+    background-color: lightblue;
+    border-radius: 5px;
+}

@@ -25,7 +25,45 @@ function slugify(value) {
 }
 
 function renderItemTextToHtml(value) {
-    return escapeHtml(value || "").replace(/\n/g, "<br>");
+    const lines = String(value || "").split(/\r?\n/);
+    const parts = [];
+    let listBuffer = [];
+
+    function flushList() {
+        if (listBuffer.length === 0) return;
+
+        parts.push(`
+            <ul class="im-map__text-list">
+                ${listBuffer
+                    .map((item) => `<li>${escapeHtml(item)}</li>`)
+                    .join("")}
+            </ul>
+        `);
+
+        listBuffer = [];
+    }
+
+    lines.forEach((line) => {
+        if (line.startsWith("- ")) {
+            listBuffer.push(line.slice(2));
+            return;
+        }
+
+        flushList();
+
+        if (line === "") {
+            parts.push("<br>");
+            return;
+        }
+
+        parts.push(
+            `<p class="im-map__text-line">${escapeHtml(line)}</p>`,
+        );
+    });
+
+    flushList();
+
+    return parts.join("");
 }
 
 function buildExportPathFromLiveStage(pathEl) {
@@ -61,7 +99,9 @@ function measureCategoryFromLiveStage(state, category, tempMount) {
         return {
             groupId: group.id,
             pathD: buildExportPathFromLiveStage(pathEls[index]),
-            items: getItemsForGroup(state, group).sort((a, b) => a.order - b.order),
+            items: getItemsForGroup(state, group).sort(
+                (a, b) => a.order - b.order,
+            ),
         };
     });
 
@@ -158,7 +198,9 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
                         item,
                         category,
                         index === measured.items.length - 1,
-                        index === measured.items.length - 1 ? group.labelWidth : null,
+                        index === measured.items.length - 1
+                            ? group.labelWidth
+                            : null,
                     ),
                 )
                 .join("");
@@ -298,6 +340,7 @@ function buildAccordionHtml(mapId, accessibleListHtml) {
                     aria-expanded="false"
                     data-toggle="collapse"
                     role="button"
+                    id="im-map-version-accessible"
                 >
 
                     Afficher le contenu de la carte interactive en liste
@@ -418,11 +461,9 @@ export function generateCMSCode(state) {
         `.trim();
 
         return html;
-
     } finally {
-        if(tempMount.parentNode) {
+        if (tempMount.parentNode) {
             tempMount.parentNode.removeChild(tempMount);
         }
     }
-
 }

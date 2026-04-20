@@ -17,34 +17,48 @@
 /* ==========================================================================
    CSS reset
    ========================================================================== */
-
 .im-map {
     line-height: 1.5;
     font-family: 'EDF2020W01-Regular', sans-serif !important;
     -webkit-font-smoothing: antialiased;
     interpolate-size: allow-keywords;
 
-    & *, & *::before, & *::after {
-      box-sizing: border-box;
-      margin: 0;
+    & *,
+    & *::before,
+    & *::after {
+        box-sizing: border-box;
+        margin: 0;
     }
 
-    img, picture, video, canvas, svg {
-      display: block;
-      max-width: 100%;
+    img,
+    picture,
+    video,
+    canvas,
+    svg {
+        display: block;
+        max-width: 100%;
     }
 
-    input, button, textarea, select {
-      font: inherit;
+    input,
+    button,
+    textarea,
+    select {
+        font: inherit;
     }
 
-    p, h1, h2, h3, h4, h5, h6 {
-      overflow-wrap: break-word;
-      text-wrap: balance;
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        overflow-wrap: break-word;
+        text-wrap: balance;
     }
 
     p {
-      text-wrap: pretty;
+        text-wrap: pretty;
     }
 
     isolation: isolate;
@@ -175,9 +189,40 @@
 .im-map__row-text {
     font-weight: 700;
     line-height: 1.25;
-    font-size: var(--prod-font-size);
+    font-size: var(--prod-font-size)  !important;
     word-break: break-word;
-    white-space: pre-line;
+}
+
+.im-map__row-text p {
+    font-size: var(--prod-font-size)  !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.im-map__text-line {
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.im-map__text-list {
+    margin: 0;
+    padding-left: 18px !important;
+    list-style: disc;
+    list-style: disc;
+    list-style-position: outside !important;
+}
+
+.im-map__text-list li {
+    margin: 0;
+    padding: 0;
+}
+
+.im-map__text-line+.im-map__text-list,
+.im-map__text-list+.im-map__text-line,
+.im-map__text-list+.im-map__text-list,
+.im-map__text-line+.im-map__text-line {
+    margin-top: 2px;
 }
 
 .im-map__row-textblock {
@@ -362,10 +407,6 @@ a[id^="link-"],
 
 .im-map__a11y-item.is-linked:hover .im-map__a11y-text {
     color: var(--hover-text-a11y-list-color) !important;
-}
-
-.im-map__a11y-text {
-    white-space: pre-line;
 }
 
 .im-map__fallback-list {

@@ -15,7 +15,8 @@
         <header class="app-header">
             <div>
                 <h1>Interactive map builder</h1>
-                <p>Create, drag, drop, copy, paste, enjoy!</p>
+                <p>Create, drag, drop, copy, paste, enjoy! Don't forget to <strong>save your work</strong>. If the save is incompatible with the version of the app, contact the devs.</p>
+                <p>To create a list, start a new line with: <span class="tuto-highlight">- </span>.</p>
             </div>
         </header>
 
@@ -31,20 +32,6 @@
                 <div id="stage-tabs-root"></div>
 
                 <div id="stage-root"></div>
-            </section>
-
-            <aside class="panel builder-panel">
-                <div class="panel-header">
-                    <div>
-                        <h2>Builder</h2>
-                        <p class="panel-subtitle">Categories and items</p>
-                    </div>
-                    <div class="panel-actions">
-                        <button id="add-category-btn" type="button">Add category</button>
-                    </div>
-                </div>
-
-                <div id="builder-root"></div>
 
                 <div class="panel-header">
                     <div>
@@ -63,6 +50,20 @@
                     <textarea id="generated-code-output" rows="18"
                         placeholder="Generated code will appear here..."></textarea>
                 </div>
+            </section>
+
+            <aside class="panel builder-panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Builder</h2>
+                        <p class="panel-subtitle">Categories and items</p>
+                    </div>
+                    <div class="panel-actions">
+                        <button id="add-category-btn" type="button">Add category</button>
+                    </div>
+                </div>
+
+                <div id="builder-root"></div>
             </aside>
         </main>
     </div>

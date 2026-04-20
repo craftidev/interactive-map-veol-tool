@@ -22,7 +22,7 @@
 
 .app-layout {
     display: grid;
-    grid-template-columns: minmax(860px, 1fr) 460px;
+    grid-template-columns: minmax(0, 990px) minmax(500px, 1fr);
     gap: 24px;
     align-items: start;
 }
@@ -107,9 +107,14 @@
     color: var(--muted);
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1550px) {
     .app-layout {
         grid-template-columns: 1fr;
+    }
+
+    .builder-panel {
+        min-width: 0;
+        order: -1;
     }
 }
 
