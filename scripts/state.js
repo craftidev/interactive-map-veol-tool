@@ -20,7 +20,6 @@ const DEFAULT_MAP = {
 };
 
 export const PRESET_CATEGORY_COLORS = [
-    { name: "Dark blue", value: "#001A70" },
     { name: "Medium blue", value: "#1057C8" },
     { name: "Light blue", value: "#1089FF" },
     { name: "Dark orange", value: "#FE5815" },
