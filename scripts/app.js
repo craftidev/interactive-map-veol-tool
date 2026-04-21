@@ -29,9 +29,13 @@ import {
 import {
     renderStage,
     syncStageConnections,
-    syncStageLabelWidths,
+    syncStageLabelMeasures,
 } from "./render-stage.js";
-import { createInitialState, normalizeLoadedState } from "./state.js";
+import {
+    createInitialState,
+    normalizeLoadedState,
+    APP_STATE_VERSION,
+} from "./state.js";
 import { renderBuilder } from "./render-builder.js";
 import { generateCMSCode } from "./export.js";
 
@@ -56,7 +60,6 @@ function handleError(error, context = "Unknown error") {
         `${context}\n\nError: ${message}\n\nPlease save your map if possible and send it to the dev.`,
     );
 }
-
 
 window.addEventListener("error", (event) => {
     handleError(event.error || event.message, "Unhandled application error");
@@ -111,33 +114,46 @@ function downloadJsonFile(filename, content) {
     URL.revokeObjectURL(objectUrl);
 }
 
-async function handleLoadJsonFile(file) {
-    if (!file) return;
-
+function handleLoadJsonFile(file) {
     try {
-        const text = await file.text();
-        const parsed = JSON.parse(text);
-        const normalizedState = normalizeLoadedState(parsed);
+        const reader = new FileReader();
 
-        replaceStateContents(state, normalizedState);
-        generatedCodeOutputEl.value = "";
-        renderApp();
-    } catch (error) {
-        handleError(error, "Invalid map file. Could not load JSON.");
+        reader.onload = (e) => {
+            const parsed = JSON.parse(e.target.result);
+            const parsedVersion = parsed?.meta?.version;
+
+            if (parsedVersion !== APP_STATE_VERSION) {
+                window.alert(
+                    `This save file is not compatible with this version of the tool.
+
+Expected version: ${APP_STATE_VERSION}
+Found version: ${parsedVersion ?? "unknown"}
+
+If you need to retrieve your data, please contact the devs.`,
+                );
+                return;
+            }
+
+            const normalizedState = normalizeLoadedState(parsed);
+            replaceStateContents(state, normalizedState);
+            renderApp();
+        };
+
+        reader.readAsText(file);
+    } catch (err) {
+        handleError(err, "Failed to load JSON file.");
     }
 }
-
-
 
 function renderApp() {
     try {
         renderStage(state, stageTabsRootEl, stageRootEl);
         renderBuilder(state, builderRootEl);
         syncStageConnections(state, stageRootEl);
-        syncStageLabelWidths(state, stageRootEl);
+        syncStageLabelMeasures(state, stageRootEl);
         bindEvents();
-    } catch(error) {
-        handleError(error, "The app failed while rendering.")
+    } catch (error) {
+        handleError(error, "The app failed while rendering.");
     }
 }
 
@@ -164,7 +180,9 @@ function handleActionClick(event) {
         switch (action) {
             case "apply-color-swatch": {
                 const formEl = event.currentTarget.closest("form");
-                const colorInputEl = formEl?.querySelector('input[name="color"]');
+                const colorInputEl = formEl?.querySelector(
+                    'input[name="color"]',
+                );
                 const nextColor = event.currentTarget.dataset.color || "";
 
                 if (colorInputEl && nextColor) {
@@ -245,9 +263,8 @@ function handleActionClick(event) {
         }
 
         renderApp();
-
-    } catch(error) {
-        handleError(error, "This action failed.")
+    } catch (error) {
+        handleError(error, "This action failed.");
     }
 }
 
@@ -283,9 +300,8 @@ function handleFormSubmit(event) {
         }
 
         renderApp();
-
-    } catch(error) {
-        handleError(error, "This form submission failed.")
+    } catch (error) {
+        handleError(error, "This form submission failed.");
     }
 }
 

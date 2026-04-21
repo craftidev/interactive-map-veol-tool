@@ -121,15 +121,19 @@ function buildConnectorPathWithUnderline(
     return `M ${underlineStart.x} ${underlineStart.y} L ${underlineEnd.x} ${underlineEnd.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${end.x} ${end.y}`;
 }
 
-function buildStageGroupItem(category, item, isBottomItem, forcedWidth = null) {
+function buildStageGroupItem(
+    item,
+    category,
+    isBottomRow,
+) {
     const iconStyle = category.iconUrl
         ? `style="background-image: url('${escapeHtml(category.iconUrl)}'); --stage-icon-fallback: transparent;"`
         : "";
 
     return `
       <div
-        class="stage-group-row ${isBottomItem ? "has-underline is-bottom" : "is-background"}"
-        data-role="${isBottomItem ? "connector-anchor" : "stack-row"}"
+        class="stage-group-row ${isBottomRow ? "has-underline is-bottom" : "is-background"}"
+        data-role="${isBottomRow ? "connector-anchor" : "stack-row"}"
         style="color: ${escapeHtml(category.color)};"
       >
         <div class="stage-group__icon" ${iconStyle}></div>
@@ -152,11 +156,10 @@ function buildStageGroup(category, group, items, isSelected) {
       ${items
           .map((item, index) =>
               buildStageGroupItem(
-                  category,
-                  item,
-                  index === items.length - 1,
-                  index === items.length - 1 ? group.labelWidth : null,
-              ),
+                item,
+                category,
+                index === items.length - 1,
+            ),
           )
           .join("")}
     </div>
@@ -312,7 +315,7 @@ export function syncStageConnections(state, stageRootEl) {
     svgEl.innerHTML = paths.join("");
 }
 
-export function syncStageLabelWidths(state, stageRootEl) {
+export function syncStageLabelMeasures(state, stageRootEl) {
     const groups = state.groups || [];
 
     groups.forEach((group) => {
@@ -325,14 +328,20 @@ export function syncStageLabelWidths(state, stageRootEl) {
 
         if (!anchorEl) return;
 
-        const measuredWidth = Math.round(anchorEl.offsetWidth);
+        const rect = anchorEl.getBoundingClientRect();
+        const measuredWidth = Number(rect.width.toFixed(2));
+        const measuredHeight = Number(rect.height.toFixed(2));
 
-        if (!Number.isFinite(measuredWidth) || measuredWidth <= 0) {
+        const measuredIsInvalid = (val) => !Number.isFinite(val) || val <= 0;
+        if (measuredIsInvalid(measuredWidth) || measuredIsInvalid(measuredHeight)) {
             return;
         }
 
-        if (group.labelWidth !== measuredWidth) {
+        const widthChanged = group.labelWidth !== measuredWidth;
+        const heightChanged = group.labelHeight !== measuredHeight;
+        if (widthChanged || heightChanged) {
             group.labelWidth = measuredWidth;
+            group.labelHeight = measuredHeight;
         }
     });
 }

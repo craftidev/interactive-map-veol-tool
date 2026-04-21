@@ -214,6 +214,7 @@ export function saveNewItem(state, categoryId, values) {
         dotX: placement.dotX,
         dotY: placement.dotY,
         labelWidth: null,
+        labelHeight: null,
     };
 
     state.items.push(newItem);
@@ -250,6 +251,7 @@ export function saveEditedItem(state, itemId, values) {
     const group = getGroupById(state, item.groupId);
     if (group) {
         group.labelWidth = null;
+        group.labelHeight = null;
     }
 
     state.ui.editingItemId = null;
@@ -284,6 +286,7 @@ export function deleteItem(state, itemId) {
                 }
             });
             group.labelWidth = null;
+            group.labelHeight = null;
             syncGroupCategoryFromItems(state, group);
         }
     }
@@ -415,6 +418,7 @@ export function groupSelectedItems(state, categoryId) {
     anchorGroup.itemIds = mergedItemIds;
     anchorGroup.categoryId = categoryId;
     anchorGroup.labelWidth = null;
+    anchorGroup.labelHeight = null;
 
     mergedItemIds.forEach((itemId) => {
         const item = getItemById(state, itemId);
@@ -454,6 +458,7 @@ export function ungroupItemGroup(state, itemId) {
     const firstItemId = originalItemIds[0];
     group.itemIds = [firstItemId];
     group.labelWidth = null;
+    group.labelHeight = null;
 
     const firstItem = getItemById(state, firstItemId);
     if (firstItem) {
@@ -477,6 +482,7 @@ export function ungroupItemGroup(state, itemId) {
             dotX: originalDotX,
             dotY: originalDotY,
             labelWidth: null,
+            labelHeight: null,
         });
     });
 

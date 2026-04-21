@@ -109,12 +109,24 @@ function measureCategoryFromLiveStage(state, category, tempMount) {
     return measured;
 }
 
-function buildExportRowHtml(item, category, isBottomRow, forcedWidth = null) {
+function buildExportRowHtml(
+    item,
+    category,
+    isBottomRow,
+    forcedWidth = null,
+    forcedHeight = null,
+) {
     const textHtml = renderItemTextToHtml(item.name);
     const linkId = `link-${item.id}`;
+    const safeWidth= Number.isFinite(forcedWidth) ? forcedWidth : null;
+    const safeHeight = Number.isFinite(forcedHeight) ? forcedHeight : null;
+    const sizeStyle = isBottomRow ? [
+        safeWidth ? `width: ${safeWidth}px;` : "",
+        safeHeight ? `height: ${safeHeight}px;` : "",
+    ].join(" ") : "";
 
     return `
-        <div class="im-map__row ${isBottomRow ? "im-map__row--anchor" : ""}" style="color: var(--im-map-color); ${isBottomRow && forcedWidth ? `width: ${forcedWidth}px;` : ""}">
+        <div class="im-map__row ${isBottomRow ? "im-map__row--anchor" : ""}" style="color: var(--im-map-color); ${sizeStyle}">
             ${
                 item.linkUrl
                     ? `
@@ -198,9 +210,8 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
                         item,
                         category,
                         index === measured.items.length - 1,
-                        index === measured.items.length - 1
-                            ? group.labelWidth
-                            : null,
+                        index === measured.items.length - 1 ? group.labelWidth : null,
+                        index === measured.items.length - 1 ? group.labelHeight : null,
                     ),
                 )
                 .join("");
