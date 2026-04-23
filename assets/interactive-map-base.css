@@ -55,11 +55,6 @@
     h5,
     h6 {
         overflow-wrap: break-word;
-        text-wrap: balance;
-    }
-
-    p {
-        text-wrap: pretty;
     }
 
     isolation: isolate;
@@ -190,12 +185,12 @@
 .im-map__row-text {
     font-weight: var(--prod-font-weight) !important;
     line-height: 1.25;
-    font-size: var(--prod-font-size)  !important;
+    font-size: var(--prod-font-size) !important;
     word-break: break-word;
 }
 
 .im-map__row-text p {
-    font-size: var(--prod-font-size)  !important;
+    font-size: var(--prod-font-size) !important;
     margin: 0 !important;
     padding: 0 !important;
 }
