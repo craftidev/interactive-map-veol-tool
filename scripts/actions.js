@@ -512,3 +512,31 @@ export function clearCategorySelection(state, categoryId) {
         return !item || item.categoryId !== categoryId;
     });
 }
+
+export function moveItemWithinGroup(state, itemId, direction) {
+    const item = getItemById(state, itemId);
+    if (!item) return;
+
+    const group = getGroupById(state, item.groupId);
+    if (!group || group.itemIds.length <= 1) return;
+
+    const currentIndex = group.itemIds.findIndex((id) => id === itemId);
+    if (currentIndex === -1) return;
+
+    const targetIndex =
+        direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+    if (targetIndex < 0 || targetIndex >= group.itemIds.length) return;
+
+    const [movedId] = group.itemIds.splice(currentIndex, 1);
+    group.itemIds.splice(targetIndex, 0, movedId);
+
+    const orderedItems = group.itemIds
+        .map((groupItemId) => getItemById(state, groupItemId))
+        .filter(Boolean);
+
+    reindexOrders(orderedItems);
+
+    group.labelWidth = null;
+    group.labelHeight = null;
+}

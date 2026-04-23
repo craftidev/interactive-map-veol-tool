@@ -26,6 +26,7 @@
     --stage-line-thickness: 1px;
     --stage-line-dash-length: 8px;
     --stage-line-dash-gap: 6px;
-    --prod-font-size: 12px;
+    --prod-font-size: 1rem;
+    --prod-font-weight: normal;
     --prod-square-icon-w-h: 31px;
 }

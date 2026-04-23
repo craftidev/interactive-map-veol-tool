@@ -61,10 +61,10 @@
     height: var(--stage-height);
     min-height: var(--stage-height);
     flex: 0 0 auto;
-    border-radius: 18px;
+    /* FIX bug firefox 23/04/26 border-radius: 18px; */
     background:
-        linear-gradient(90deg, rgba(31, 94, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(rgba(31, 94, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to right, rgba(31, 94, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 94, 255, 0.04) 1px, transparent 1px),
         var(--canvas-bg-color);
     background-size: 24px 24px, 24px 24px, auto;
     overflow: hidden;
@@ -131,9 +131,12 @@
 }
 
 .stage-group.is-selected .stage-group-row.has-underline {
-    outline: 2px solid var(--primary);
+    outline: none;
+    /* logic of highlighting what you select still there but we hide it with no CSS */
+    /* Since it's a pretty standard feature, I keep it in case they change their mind */
+    /* outline: 2px solid var(--primary);
     outline-offset: 4px;
-    border-radius: 8px;
+    border-radius: 8px; */
 }
 
 .stage-group-row {
@@ -170,7 +173,7 @@
 
 .stage-group__item {
     font-size: var(--prod-font-size);
-    font-weight: 700;
+    font-weight: var(--prod-font-weight);
     line-height: 1.25;
     word-break: break-word;
 }

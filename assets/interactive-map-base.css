@@ -1,5 +1,6 @@
 :root {
-    --prod-font-size: 12px;
+    --prod-font-size: 1rem;
+    --prod-font-weight: normal;
     --prod-square-icon-w-h: 31px;
     --seperator-a11y-list-color: darkgrey;
     --text-a11y-list-color: black;
@@ -187,7 +188,7 @@
 }
 
 .im-map__row-text {
-    font-weight: 700;
+    font-weight: var(--prod-font-weight) !important;
     line-height: 1.25;
     font-size: var(--prod-font-size)  !important;
     word-break: break-word;
@@ -352,7 +353,7 @@ a[id^="link-"],
 
 .im-map__a11y-title {
     margin-bottom: 8px;
-    font-weight: 700;
+    font-weight: var(--prod-font-weight) !important;
 }
 
 .im-map__a11y-list {
@@ -400,7 +401,6 @@ a[id^="link-"],
     gap: 8px;
 }
 
-.im-map__a11y-item-content,
 .im-map__a11y-text {
     color: var(--text-a11y-list-color) !important;
 }

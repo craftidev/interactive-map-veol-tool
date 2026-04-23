@@ -55,7 +55,7 @@ function renderCategoryForm(draft, mode, categoryId = "") {
       <div class="form-grid">
         <div class="field">
           <label>Name</label>
-          <input type="text" name="name" value="${escapeHtml(draft?.name || "")}" placeholder="Archives" required />
+          <input type="text" name="name" value="${escapeHtml(draft?.name || "")}" placeholder="Nom de la catégorie" required />
         </div>
 
         <div class="field">
@@ -204,6 +204,15 @@ function renderGroupContainer(state, category, group) {
 function renderItemRow(state, item) {
     const isEditing = state.ui.editingItemId === item.id;
 
+    const group = state.groups.find(
+        (currentGroup) => currentGroup.id === item.groupId,
+    );
+    const groupSize = group?.itemIds?.length || 0;
+    const isGrouped = groupSize > 1;
+    const itemIndex = isGrouped ? group.itemIds.indexOf(item.id) : -1;
+    const canMoveUp = isGrouped && itemIndex > 0;
+    const canMoveDown = isGrouped && itemIndex < groupSize - 1;
+
     if (isEditing) {
         return renderItemForm(
             state.ui.draftItem,
@@ -238,6 +247,26 @@ function renderItemRow(state, item) {
                         : "No link"
                 }
               </div>
+              ${
+                  isGrouped
+                      ? `
+                <div class="item-row__order-controls">
+                    <button
+                    type="button"
+                    data-action="move-item-up"
+                    data-item-id="${item.id}"
+                    ${!canMoveUp ? "disabled" : ""}
+                    >↑</button>
+                    <button
+                    type="button"
+                    data-action="move-item-down"
+                    data-item-id="${item.id}"
+                    ${!canMoveDown ? "disabled" : ""}
+                    >↓</button>
+                </div>
+              `
+                      : ""
+              }
             </div>
           </div>
 

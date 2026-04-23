@@ -25,6 +25,7 @@ import {
     toggleCategoryCollapsed,
     toggleItemSelection,
     ungroupItemGroup,
+    moveItemWithinGroup,
 } from "./actions.js";
 import {
     renderStage,
@@ -256,6 +257,14 @@ function handleActionClick(event) {
 
             case "ungroup-item-group":
                 ungroupItemGroup(state, itemId);
+                break;
+
+            case "move-item-up":
+                moveItemWithinGroup(state, itemId, "up");
+                break;
+
+            case "move-item-down":
+                moveItemWithinGroup(state, itemId, "down");
                 break;
 
             default:
