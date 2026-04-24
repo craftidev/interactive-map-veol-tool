@@ -145,6 +145,11 @@
     pointer-events: visiblePainted;
 }
 
+.im-map__dot-svg {
+    stroke: rgba(255, 255, 255, 0.95);
+    stroke-width: 3px;
+}
+
 /* ==========================================================================
    positioned groups and rows
    ========================================================================== */
@@ -282,7 +287,7 @@ a[id^="link-"],
     overflow: hidden !important;
 }
 
-.im-map__menu-item:hover {
+.im-map__menu-item:is(:hover, :focus-within) {
     background-color: var(--hover-category-and-list-link-bg-color);
 }
 
@@ -303,7 +308,7 @@ a[id^="link-"],
 /* ==========================================================================
    hover interactions
    ========================================================================== */
-.im-map__row-hitbox:hover+.im-map__row-content .im-map__row-text {
+.im-map__row-hitbox:is(:hover, :focus-within)+.im-map__row-content .im-map__row-text {
     text-decoration: underline;
 }
 
@@ -400,7 +405,7 @@ a[id^="link-"],
     color: var(--text-a11y-list-color) !important;
 }
 
-.im-map__a11y-item.is-linked:hover .im-map__a11y-text {
+.im-map__a11y-item.is-linked:is(:hover, :focus-within) .im-map__a11y-text {
     color: var(--hover-text-a11y-list-color) !important;
 }
 

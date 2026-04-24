@@ -56,14 +56,29 @@ function renderItemTextToHtml(value) {
             return;
         }
 
-        parts.push(
-            `<p class="im-map__text-line">${escapeHtml(line)}</p>`,
-        );
+        parts.push(`<p class="im-map__text-line">${escapeHtml(line)}</p>`);
     });
 
     flushList();
 
     return parts.join("");
+}
+
+function normalizeLinkText(value) {
+    return String(value || "")
+        .replace(/^- /gm, "")
+        .replace(/\r?\n/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function getItemLinkText(item) {
+    if (!item) return "Lien";
+    return (
+        normalizeLinkText(item.a11yText) ||
+        normalizeLinkText(item.name) ||
+        "Lien"
+    );
 }
 
 function buildExportPathFromLiveStage(pathEl) {
@@ -118,12 +133,14 @@ function buildExportRowHtml(
 ) {
     const textHtml = renderItemTextToHtml(item.name);
     const linkId = `link-${item.id}`;
-    const safeWidth= Number.isFinite(forcedWidth) ? forcedWidth : null;
+    const safeWidth = Number.isFinite(forcedWidth) ? forcedWidth : null;
     const safeHeight = Number.isFinite(forcedHeight) ? forcedHeight : null;
-    const sizeStyle = isBottomRow ? [
-        safeWidth ? `width: ${safeWidth}px;` : "",
-        safeHeight ? `height: ${safeHeight}px;` : "",
-    ].join(" ") : "";
+    const sizeStyle = isBottomRow
+        ? [
+              safeWidth ? `width: ${safeWidth}px;` : "",
+              safeHeight ? `height: ${safeHeight}px;` : "",
+          ].join(" ")
+        : "";
 
     return `
         <div class="im-map__row ${isBottomRow ? "im-map__row--anchor" : ""}" style="color: var(--im-map-color); ${sizeStyle}">
@@ -131,7 +148,7 @@ function buildExportRowHtml(
                 item.linkUrl
                     ? `
                         <div class="im-map__row-hitbox">
-                            <a id="${linkId}" href="${escapeAttr(item.linkUrl)}" target="_blank" rel="noreferrer noopener">.</a>
+                            <a id="${linkId}" href="${escapeAttr(item.linkUrl)}" target="_blank" rel="noreferrer noopener">${escapeHtml(getItemLinkText(item))}</a>
                         </div>
                     `
                     : ""
@@ -150,8 +167,10 @@ function buildExportRowHtml(
 function buildConnectorSvgMarkup(entry, group, category) {
     const anchorItem = entry.items[entry.items.length - 1] || null;
     const href = anchorItem?.linkUrl?.trim() || "";
+    const linkText = getItemLinkText(anchorItem);
 
     const inner = `
+        <title>${escapeHtml(linkText)}</title>
         <path
             class="im-map__path"
             d="${escapeAttr(entry.pathD)}"
@@ -210,8 +229,12 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
                         item,
                         category,
                         index === measured.items.length - 1,
-                        index === measured.items.length - 1 ? group.labelWidth : null,
-                        index === measured.items.length - 1 ? group.labelHeight : null,
+                        index === measured.items.length - 1
+                            ? group.labelWidth
+                            : null,
+                        index === measured.items.length - 1
+                            ? group.labelHeight
+                            : null,
                     ),
                 )
                 .join("");
@@ -240,7 +263,6 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
                 class="im-map__svg"
                 viewBox="0 0 917 705"
                 preserveAspectRatio="none"
-                aria-hidden="true"
             >
                 ${connectorSvgHtml}
             </svg>
@@ -273,7 +295,7 @@ function buildCategoryMenuHtml(categories, mapId) {
                                     data-toggle="collapse"
                                     data-parent="#${mapId}-layers"
                                     role="button"
-                                >.</a>
+                                >${escapeHtml(category.name)}</a>
                             </div>
                         </div>
                     `;
@@ -323,7 +345,7 @@ function buildAccessibleListHtml(state) {
                                                         href="${escapeAttr(item.linkUrl)}"
                                                         target="_blank"
                                                         rel="noreferrer noopener"
-                                                    >.</a>
+                                                    >${escapeHtml(getItemLinkText(item))}</a>
                                                 `
                                                 : ""
                                         }
@@ -434,6 +456,7 @@ export function generateCMSCode(state) {
     <link rel="stylesheet" href="/documents/d/vivre-edf/interactive-map-base.css" />
 
     <div class="${mapId} im-map">
+        <div><a class="sr-only" href="#im-map-version-accessible">Version accessible de la carte interactive</a></div>
         <div class="im-map__interactive">
             <div class="im-map__scene-frame">
                 <div class="im-map__scale-shell">
@@ -441,7 +464,6 @@ export function generateCMSCode(state) {
                         <div
                             class="im-map__map-image"
                             style="background-image: url('/documents/d/vivre-edf/map_913x900.png');"
-                            aria-hidden="true"
                         ></div>
 
                         <div id="${mapId}-layers">

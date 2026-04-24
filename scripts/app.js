@@ -87,6 +87,7 @@ function readFormValues(formEl) {
 
     return {
         name: String(formData.get("name") || "").trim(),
+        a11yText: String(formData.get("a11yText") || "").trim(),
         color: String(formData.get("color") || "").trim(),
         iconUrl: String(formData.get("iconUrl") || "").trim(),
         linkUrl: String(formData.get("linkUrl") || "").trim(),

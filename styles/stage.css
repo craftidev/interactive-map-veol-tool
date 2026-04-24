@@ -204,8 +204,8 @@
 
 .stage-dot {
     position: absolute;
-    width: 16px;
-    height: 16px;
+    width: 13px;
+    height: 13px;
     border: 0;
     border-radius: 999px;
     background: currentColor;

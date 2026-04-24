@@ -180,6 +180,7 @@ export function startAddItem(state, categoryId) {
     state.ui.draftItem = {
         categoryId,
         name: "",
+        a11yText: "",
         linkUrl: "",
     };
     ensureCategoryExpanded(state, categoryId);
@@ -200,6 +201,7 @@ export function saveNewItem(state, categoryId, values) {
         categoryId,
         groupId,
         name: values.name.trim() || "Untitled item",
+        a11yText: values.a11yText.trim(),
         linkUrl: values.linkUrl.trim(),
         order: existingItems.length,
     };
@@ -230,6 +232,7 @@ export function startEditItem(state, itemId) {
     state.ui.draftItem = {
         categoryId: item.categoryId,
         name: item.name,
+        a11yText: item.a11yText || "",
         linkUrl: item.linkUrl,
     };
     state.ui.activeCategoryId = item.categoryId;
@@ -246,6 +249,7 @@ export function saveEditedItem(state, itemId, values) {
     if (!item) return;
 
     item.name = values.name.trim() || "Untitled item";
+    item.a11yText = values.a11yText.trim();
     item.linkUrl = values.linkUrl.trim();
 
     const group = getGroupById(state, item.groupId);

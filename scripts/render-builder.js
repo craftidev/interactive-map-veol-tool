@@ -106,6 +106,16 @@ function renderItemForm(draft, mode, categoryId, itemId = "") {
         </div>
 
         <div class="field field--full">
+            <label>Accessibility link text (optional)</label>
+            <input
+                type="text"
+                name="a11yText"
+                value="${escapeHtml(draft?.a11yText || "")}"
+                placeholder="Surcharge texte accessible dans les liens invisibles"
+            />
+        </div>
+
+        <div class="field field--full">
           <label>Link URL (optional)</label>
           <input
             type="text"
