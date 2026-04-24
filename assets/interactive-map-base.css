@@ -5,7 +5,7 @@
     --seperator-a11y-list-color: darkgrey;
     --text-a11y-list-color: black;
     --hover-text-a11y-list-color: #001A70;
-    --hover-category-and-list-link-bg-color: #E9F1F9;
+    --hover-focus-bg-color: #E9F1F9;
 }
 
 @font-face {
@@ -287,10 +287,6 @@ a[id^="link-"],
     overflow: hidden !important;
 }
 
-.im-map__menu-item:is(:hover, :focus-within) {
-    background-color: var(--hover-category-and-list-link-bg-color);
-}
-
 .im-map__row-hitbox,
 .im-map__menu-hitbox {
     position: absolute;
@@ -310,6 +306,15 @@ a[id^="link-"],
    ========================================================================== */
 .im-map__row-hitbox:is(:hover, :focus-within)+.im-map__row-content .im-map__row-text {
     text-decoration: underline;
+    background-color: var(--hover-focus-bg-color);
+}
+
+.im-map__a11y-item.is-linked:is(:hover, :focus-within) .im-map__a11y-text {
+    background-color: var(--hover-focus-bg-color);
+}
+
+.im-map__menu-item:is(:hover, :focus-within) {
+    background-color: var(--hover-focus-bg-color);
 }
 
 /* ==========================================================================
@@ -343,6 +348,18 @@ a[id^="link-"],
 /* ==========================================================================
    accessibility / fallback content
    ========================================================================== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
 .im-map__accordion {
     margin-top: 20px;
 }
@@ -403,10 +420,6 @@ a[id^="link-"],
 
 .im-map__a11y-text {
     color: var(--text-a11y-list-color) !important;
-}
-
-.im-map__a11y-item.is-linked:is(:hover, :focus-within) .im-map__a11y-text {
-    color: var(--hover-text-a11y-list-color) !important;
 }
 
 .im-map__fallback-list {
