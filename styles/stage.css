@@ -159,6 +159,32 @@
     opacity: 0.98;
 }
 
+.stage-group__label {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 4px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.stage-group__textblock {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.stage-group__link-icon {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    align-self: flex-end;
+    margin-bottom: 2px;
+    margin-left: 10px;
+    background-image: url("../assets/icon-link.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
 .stage-group__icon {
     width: var(--prod-square-icon-w-h);
     height: var(--prod-square-icon-w-h);

@@ -180,6 +180,7 @@ export function startAddItem(state, categoryId) {
     state.ui.draftItem = {
         categoryId,
         name: "",
+        listName: "",
         a11yText: "",
         linkUrl: "",
     };
@@ -201,6 +202,7 @@ export function saveNewItem(state, categoryId, values) {
         categoryId,
         groupId,
         name: values.name.trim() || "Untitled item",
+        listName: values.listName.trim(),
         a11yText: values.a11yText.trim(),
         linkUrl: values.linkUrl.trim(),
         order: existingItems.length,
@@ -232,6 +234,7 @@ export function startEditItem(state, itemId) {
     state.ui.draftItem = {
         categoryId: item.categoryId,
         name: item.name,
+        listName: item.listName || "",
         a11yText: item.a11yText || "",
         linkUrl: item.linkUrl,
     };
@@ -249,6 +252,7 @@ export function saveEditedItem(state, itemId, values) {
     if (!item) return;
 
     item.name = values.name.trim() || "Untitled item";
+    item.listName = values.listName.trim();
     item.a11yText = values.a11yText.trim();
     item.linkUrl = values.linkUrl.trim();
 

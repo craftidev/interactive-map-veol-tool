@@ -132,14 +132,22 @@ function buildStageGroupItem(
 
     return `
       <div
-        class="stage-group-row ${isBottomRow ? "has-underline is-bottom" : "is-background"}"
+        class="stage-group-row ${isBottomRow ? "has-underline is-bottom" : "is-background"} ${item.linkUrl ? "is-linked" : ""}"
         data-role="${isBottomRow ? "connector-anchor" : "stack-row"}"
         style="color: ${escapeHtml(category.color)};"
       >
         <div class="stage-group__icon" ${iconStyle}></div>
 
-        <div class="stage-group__textblock">
-          <div class="stage-group__item stage-group__item-text">${renderStageItemText(item.name)}</div>
+        <div class="stage-group__label">
+            <div class="stage-group__textblock">
+                <div class="stage-group__item stage-group__item-text">${renderStageItemText(item.name)}</div>
+            </div>
+
+            ${
+                item.linkUrl
+                    ? `<div class="stage-group__link-icon" aria-hidden="true"></div>`
+                    : ""
+            }
         </div>
       </div>
     `;

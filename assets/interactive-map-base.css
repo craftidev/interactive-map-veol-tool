@@ -10,7 +10,7 @@
 
 @font-face {
     font-family: 'EDF2020W01-Regular';
-    src: url('/documents/d/vivre-edf/edf2020w01-regular.woff') format('woff');
+    src: url('/documents/d/formation-intranet/edf2020w01-regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -210,7 +210,6 @@
     margin: 0;
     padding-left: 18px !important;
     list-style: disc;
-    list-style: disc;
     list-style-position: outside !important;
 }
 
@@ -229,6 +228,27 @@
 .im-map__row-textblock {
     min-width: 0;
     flex: 1 1 auto;
+}
+
+.im-map__row-label {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 4px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.im-map__link-icon {
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+    align-self: flex-end;
+    margin-bottom: 2px;
+    margin-left: 10px;
+    background-image: url("/documents/d/formation-intranet/icon-link");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
 
 /* ==========================================================================

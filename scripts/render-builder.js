@@ -106,6 +106,16 @@ function renderItemForm(draft, mode, categoryId, itemId = "") {
         </div>
 
         <div class="field field--full">
+            <label>List name override (optional)</label>
+            <input
+                type="text"
+                name="listName"
+                value="${escapeHtml(draft?.listName || "")}"
+                placeholder="Nom utilisé uniquement dans la version liste"
+            />
+        </div>
+
+        <div class="field field--full">
             <label>Accessibility link text (optional)</label>
             <input
                 type="text"

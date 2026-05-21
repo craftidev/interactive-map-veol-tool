@@ -36,6 +36,7 @@ import {
     createInitialState,
     normalizeLoadedState,
     APP_STATE_VERSION,
+    syncIdCounterFromState,
 } from "./state.js";
 import { renderBuilder } from "./render-builder.js";
 import { generateCMSCode } from "./export.js";
@@ -87,6 +88,7 @@ function readFormValues(formEl) {
 
     return {
         name: String(formData.get("name") || "").trim(),
+        listName: String(formData.get("listName") || "").trim(),
         a11yText: String(formData.get("a11yText") || "").trim(),
         color: String(formData.get("color") || "").trim(),
         iconUrl: String(formData.get("iconUrl") || "").trim(),
@@ -138,6 +140,7 @@ If you need to retrieve your data, please contact the devs.`,
 
             const normalizedState = normalizeLoadedState(parsed);
             replaceStateContents(state, normalizedState);
+            syncIdCounterFromState(state);
             renderApp();
         };
 

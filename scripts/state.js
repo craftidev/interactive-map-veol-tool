@@ -3,7 +3,7 @@
 // selectors
 // maybe clone/import/export helpers
 
-export const APP_STATE_VERSION = 4;
+export const APP_STATE_VERSION = 5;
 
 const DEFAULT_MAP = {
     imageUrl: "",
@@ -69,6 +69,7 @@ export function createInitialState() {
                 categoryId,
                 groupId,
                 name: "EDF Smartside",
+                listName: "",
                 a11yText: "",
                 linkUrl: "",
                 order: 0,
@@ -213,6 +214,7 @@ export function normalizeLoadedState(state) {
         },
         items: (state.items || []).map((item) => ({
             ...item,
+            listName: item?.listName || "",
             a11yText: item?.a11yText || "",
         })),
         groups: (state.groups || []).map((group) => ({

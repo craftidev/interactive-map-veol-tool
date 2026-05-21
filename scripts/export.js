@@ -1,6 +1,23 @@
 import { getGroupsByCategory, getItemsForGroup } from "./state.js";
 import { renderStage, syncStageConnections } from "./render-stage.js";
 
+// Helpers
+// escapeHtml()              → HTML text and attributes
+// escapeCssString()         → CSS string fragments inside url('...')
+// normalizePlainText()      → flatten user-rich text into plain text
+// renderItemTextToHtml()    → rich item label for map/list fallback
+// renderAccessibleItemText()→ list override if present, else rich fallback
+// getMapLinkText()          → hidden map/SVG link text
+// getListLinkText()         → hidden list link text
+
+function normalizePlainText(value) {
+    return String(value || "")
+        .replace(/^- /gm, "")
+        .replace(/\r?\n/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
 function escapeHtml(value) {
     return String(value)
         .replaceAll("&", "&amp;")
@@ -9,8 +26,11 @@ function escapeHtml(value) {
         .replaceAll('"', "&quot;");
 }
 
-function escapeAttr(value) {
-    return escapeHtml(value);
+function escapeCssString(value) {
+    return String(value || "")
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replace(/\r?\n/g, " ");
 }
 
 function slugify(value) {
@@ -64,19 +84,33 @@ function renderItemTextToHtml(value) {
     return parts.join("");
 }
 
-function normalizeLinkText(value) {
-    return String(value || "")
-        .replace(/^- /gm, "")
-        .replace(/\r?\n/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+function renderAccessibleItemText(item) {
+    const listName = normalizePlainText(item.listName);
+
+    if (listName) {
+        return escapeHtml(listName);
+    }
+
+    return renderItemTextToHtml(item.name);
 }
 
-function getItemLinkText(item) {
+function getMapLinkText(item) {
     if (!item) return "Lien";
+
     return (
-        normalizeLinkText(item.a11yText) ||
-        normalizeLinkText(item.name) ||
+        normalizePlainText(item.a11yText) ||
+        normalizePlainText(item.name) ||
+        "Lien"
+    );
+}
+
+function getListLinkText(item) {
+    if (!item) return "Lien";
+
+    return (
+        normalizePlainText(item.a11yText) ||
+        normalizePlainText(item.listName) ||
+        normalizePlainText(item.name) ||
         "Lien"
     );
 }
@@ -86,7 +120,7 @@ function buildExportPathFromLiveStage(pathEl) {
 }
 
 function toCssUrlVarValue(url) {
-    return url ? `url('${escapeAttr(url)}')` : "none";
+    return url ? `url('${escapeHtml(escapeCssString(url))}')` : "none";
 }
 
 function toCssIconFallbackValue(url) {
@@ -126,7 +160,6 @@ function measureCategoryFromLiveStage(state, category, tempMount) {
 
 function buildExportRowHtml(
     item,
-    category,
     isBottomRow,
     forcedWidth = null,
     forcedHeight = null,
@@ -135,6 +168,7 @@ function buildExportRowHtml(
     const linkId = `link-${item.id}`;
     const safeWidth = Number.isFinite(forcedWidth) ? forcedWidth : null;
     const safeHeight = Number.isFinite(forcedHeight) ? forcedHeight : null;
+
     const sizeStyle = isBottomRow
         ? [
               safeWidth ? `width: ${safeWidth}px;` : "",
@@ -143,12 +177,20 @@ function buildExportRowHtml(
         : "";
 
     return `
-        <div class="im-map__row ${isBottomRow ? "im-map__row--anchor" : ""}" style="color: var(--im-map-color); ${sizeStyle}">
+        <div
+            class="im-map__row ${isBottomRow ? "im-map__row--anchor" : ""} ${item.linkUrl ? "im-map__row--linked" : ""}"
+            style="color: var(--im-map-color); ${sizeStyle}"
+        >
             ${
                 item.linkUrl
                     ? `
                         <div class="im-map__row-hitbox">
-                            <a id="${linkId}" href="${escapeAttr(item.linkUrl)}" target="_blank" rel="noreferrer noopener">${escapeHtml(getItemLinkText(item))}</a>
+                            <a
+                                id="${linkId}"
+                                href="${escapeHtml(item.linkUrl)}"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                            >${escapeHtml(getMapLinkText(item))}</a>
                         </div>
                     `
                     : ""
@@ -156,8 +198,17 @@ function buildExportRowHtml(
 
             <div class="im-map__row-content">
                 <div class="im-map__row-icon"></div>
-                <div class="im-map__row-textblock">
-                    <div class="im-map__row-text">${textHtml}</div>
+
+                <div class="im-map__row-label">
+                    <div class="im-map__row-textblock">
+                        <div class="im-map__row-text">${textHtml}</div>
+                    </div>
+
+                    ${
+                        item.linkUrl
+                            ? `<div class="im-map__link-icon" aria-hidden="true"></div>`
+                            : ""
+                    }
                 </div>
             </div>
         </div>
@@ -167,21 +218,21 @@ function buildExportRowHtml(
 function buildConnectorSvgMarkup(entry, group, category) {
     const anchorItem = entry.items[entry.items.length - 1] || null;
     const href = anchorItem?.linkUrl?.trim() || "";
-    const linkText = getItemLinkText(anchorItem);
+    const linkText = getMapLinkText(anchorItem);
 
     const inner = `
         <title>${escapeHtml(linkText)}</title>
         <path
             class="im-map__path"
-            d="${escapeAttr(entry.pathD)}"
-            style="stroke: ${escapeAttr(category.color)};"
+            d="${escapeHtml(entry.pathD)}"
+            style="stroke: ${escapeHtml(category.color)};"
         ></path>
         <circle
             class="im-map__dot-svg"
             cx="${group.dotX}"
             cy="${group.dotY}"
             r="8"
-            style="fill: ${escapeAttr(category.color)};"
+            style="fill: ${escapeHtml(category.color)};"
         ></circle>
     `;
 
@@ -193,8 +244,8 @@ function buildConnectorSvgMarkup(entry, group, category) {
         <a
             class="im-map__connector-link"
             data-group-id="${group.id}"
-            href="${escapeAttr(href)}"
-            xlink:href="${escapeAttr(href)}"
+            href="${escapeHtml(href)}"
+            xlink:href="${escapeHtml(href)}"
             target="_blank"
         >
             ${inner}
@@ -202,7 +253,12 @@ function buildConnectorSvgMarkup(entry, group, category) {
     `;
 }
 
-function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
+function buildCategoryLayerHtml(
+    category,
+    groups,
+    measuredGroups,
+    mapId
+) {
     const layerId = `${mapId}-layer-${slugify(category.id)}`;
 
     const connectorSvgHtml = groups
@@ -227,7 +283,6 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
                 .map((item, index) =>
                     buildExportRowHtml(
                         item,
-                        category,
                         index === measured.items.length - 1,
                         index === measured.items.length - 1
                             ? group.labelWidth
@@ -257,7 +312,7 @@ function buildCategoryLayerHtml(category, groups, measuredGroups, mapId) {
             class="im-map__layer collapse"
             aria-expanded="false"
             data-parent="#${mapId}-layers"
-            style="--im-map-color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
+            style="--im-map-color: ${escapeHtml(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
         >
             <svg
                 class="im-map__svg"
@@ -280,7 +335,7 @@ function buildCategoryMenuHtml(categories, mapId) {
                     const layerId = `${mapId}-layer-${slugify(category.id)}`;
 
                     return `
-                        <div class="im-map__menu-item" style="--im-map-color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};">
+                        <div class="im-map__menu-item" style="--im-map-color: ${escapeHtml(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};">
                             <div class="im-map__menu-link-content" style="color: var(--im-map-color);">
                                 <div class="im-map__menu-icon"></div>
                                 <div class="im-map__menu-label">${escapeHtml(category.name)}</div>
@@ -330,10 +385,10 @@ function buildAccessibleListHtml(state) {
                                     <li class="im-map__a11y-item ${item.linkUrl ? "is-linked" : ""}">
                                         <div
                                             class="im-map__a11y-item-content"
-                                            style="color: ${escapeAttr(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
+                                            style="color: ${escapeHtml(category.color)}; --im-map-icon: ${toCssUrlVarValue(category.iconUrl)}; --im-map-icon-fallback: ${toCssIconFallbackValue(category.iconUrl)};"
                                         >
                                             <div class="im-map__a11y-icon"></div>
-                                            <div class="im-map__a11y-text">${renderItemTextToHtml(item.name)}</div>
+                                            <div class="im-map__a11y-text">${renderAccessibleItemText(item)}</div>
                                         </div>
 
                                         ${
@@ -342,10 +397,10 @@ function buildAccessibleListHtml(state) {
                                                     <a
                                                         id="${linkId}"
                                                         class="im-map__a11y-link"
-                                                        href="${escapeAttr(item.linkUrl)}"
+                                                        href="${escapeHtml(item.linkUrl)}"
                                                         target="_blank"
                                                         rel="noreferrer noopener"
-                                                    >${escapeHtml(getItemLinkText(item))}</a>
+                                                    >${escapeHtml(getListLinkText(item))}</a>
                                                 `
                                                 : ""
                                         }
@@ -373,7 +428,7 @@ function buildAccordionHtml(mapId, accessibleListHtml) {
                     aria-expanded="false"
                     data-toggle="collapse"
                     role="button"
-                    id="im-map-version-accessible"
+                    id="im-map-version-accessible-${mapId}"
                 >
 
                     Afficher le contenu de la carte interactive en liste
@@ -407,8 +462,9 @@ function buildPerMapStyleBlock(mapId, state) {
     const connectorHoverRules = groups
         .map(
             (group) => `
-.${mapId} .im-map__layer:has(.im-map__connector-link[data-group-id="${group.id}"]:hover) .im-map__group[data-group-id="${group.id}"] .im-map__row--anchor .im-map__row-text {
+.${mapId} .im-map__layer:has(.im-map__connector-link[data-group-id="${group.id}"]:is(:hover, :focus)) .im-map__group[data-group-id="${group.id}"] .im-map__row--anchor .im-map__row-text {
     text-decoration: underline;
+    background-color: var(--hover-focus-bg-color);
 }
 `,
         )
@@ -452,18 +508,19 @@ export function generateCMSCode(state) {
 
         const accessibleListHtml = buildAccessibleListHtml(state);
 
+        // Use of internal VEOL CSS (external from this tool), `assets/interactive-map-base.css` is to be uploaded there and use as steelsheet
         const html = `
-    <link rel="stylesheet" href="/documents/d/vivre-edf/interactive-map-base.css" />
+    <link rel="stylesheet" href="/documents/d/formation-intranet/interactive-map-base.css" />
 
     <div class="${mapId} im-map">
-        <div><a class="sr-only" href="#im-map-version-accessible">Version accessible de la carte interactive</a></div>
+        <div><a class="sr-only" href="#im-map-version-accessible-${mapId}">Version accessible de la carte interactive</a></div>
         <div class="im-map__interactive">
             <div class="im-map__scene-frame">
                 <div class="im-map__scale-shell">
                     <div class="im-map__viewport">
                         <div
                             class="im-map__map-image"
-                            style="background-image: url('/documents/d/vivre-edf/map_913x900.png');"
+                            style="background-image: url('/documents/d/formation-intranet/map_913x900');"
                         ></div>
 
                         <div id="${mapId}-layers">
