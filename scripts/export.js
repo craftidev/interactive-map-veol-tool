@@ -508,8 +508,34 @@ export function generateCMSCode(state) {
 
         const accessibleListHtml = buildAccessibleListHtml(state);
 
+        // Expose CSS variable and comment for instruction. Because assets are not permanently in one place and need to be called.
         // Use of internal VEOL CSS (external from this tool), `assets/interactive-map-base.css` is to be uploaded there and use as steelsheet
         const html = `
+    <style>
+        /* Après avoir uploadé les fichiers nécessaires au fonctionnement des cartes interractive,
+        veuillez indiquer leur URL dans les variables suivantes. Et finalement, indiquez l'URL du
+        fichier CSS dans la balise <link> en dessous des variables. Attention, par défaut, les URLs
+        utilisent la communauté Intranet Formation qui ne donne pas les droits d'accès à tous. */
+
+        /* Fichiers nécessaires :
+        - interactive-map-base.css (le CSS constant côté VEOL).
+        - edf2020w01-regular.woff (font EDF qui permet une plus grande précision entre l'outil et le résultat VEOL).
+        - icon-link.svg (icône pour indiquer les liens cliquables sur la carte).
+        - resp-map-arrow.png (icône de flèche pour indiquer les liens cliquables dans la liste).
+        - map_913x900.png (carte de France en background).
+
+        Veuillez indiquer les URLs correspondante ci-dessous : */
+
+        :root {
+            --url-font: url("/documents/d/formation-intranet/edf2020w01-regular.woff") format('woff');
+            --icon-link-map: url("/documents/d/formation-intranet/icon-link");
+            --icon-link-list: url('/documents/77591/1229279018/resp-map-arrow.png');
+            --img-map-bg: url('/documents/d/formation-intranet/map_913x900');
+        }
+
+        /* N'oubliez pas de changer le href de la balise <link> ci-dessous : */
+    </style>
+
     <link rel="stylesheet" href="/documents/d/formation-intranet/interactive-map-base.css" />
 
     <div class="${mapId} im-map">
@@ -520,7 +546,7 @@ export function generateCMSCode(state) {
                     <div class="im-map__viewport">
                         <div
                             class="im-map__map-image"
-                            style="background-image: url('/documents/d/formation-intranet/map_913x900');"
+                            style="background-image: var(--img-map-bg);"
                         ></div>
 
                         <div id="${mapId}-layers">

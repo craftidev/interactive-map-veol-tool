@@ -10,7 +10,7 @@
 
 @font-face {
     font-family: 'EDF2020W01-Regular';
-    src: url('/documents/d/formation-intranet/edf2020w01-regular.woff') format('woff');
+    src: var(--font-edf20); /* var defined in the export on top for easy access for the user */
     font-weight: normal;
     font-style: normal;
 }
@@ -245,7 +245,7 @@
     align-self: flex-end;
     margin-bottom: 2px;
     margin-left: 10px;
-    background-image: url("/documents/d/formation-intranet/icon-link");
+    background-image: var(--icon-link-map); /* var defined in the export on top for easy access for the user */
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -382,6 +382,8 @@ a[id^="link-"],
 
 .im-map__accordion {
     margin-top: 20px;
+    border-top: solid 1px #ddd;
+    padding-top: 20px;
 }
 
 .im-map__a11y-category+.im-map__a11y-category {
@@ -427,7 +429,7 @@ a[id^="link-"],
     transform: translateY(-50%);
     width: 15px;
     height: 15px;
-    background-image: url('/documents/77591/1229279018/resp-map-arrow.png');
+    background-image: var(--icon-link-list); /* var defined in the export on top for easy access for the user */
     background-size: contain;
     background-repeat: no-repeat;
 }
